@@ -1,0 +1,46 @@
+﻿<Window x:Class="ImageViewer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageViewer"
+        mc:Ignorable="d"
+        Title="MainWindow" WindowState="Maximized"
+        PreviewKeyDown="MainGrid_KeyDown">
+
+    <Grid Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Name="MainGrid" Background="#FF2D2D30">
+        <Grid Name="ButtonsGrid" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top">
+            <Button Content="Open folder" Name="OpenButton" HorizontalAlignment="Left" Margin="5,0,0,0"
+                    VerticalAlignment="Top" Width="75" Height="20" Click="OpenButton_Click"/>
+            <Button Content="Settings" Name="SettingsButton" HorizontalAlignment="Left" 
+                    VerticalAlignment="Top" Margin="85,0,0,0" Height="20" Width="75"
+                    Click="SettingsButton_Click"></Button>
+        </Grid>
+        <Grid Margin="0,20,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Name="PictureGrid">
+            <Image Name="Picture" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        </Grid>
+        <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Name="SettingsGrid" Width="0"
+              Margin="0,0,0,0">
+            
+            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="75"
+                    Content="F5 bind" Name="F5SettingsButton" Margin="5,5,0,0" Click="F5SettingsButton_Click"></Button>
+            <TextBox HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Top" Margin="5,30,5,0"
+                     Name="F5DirectoryPath" Height="20"/>
+            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="75"
+                    Content="F6 bind" Name="F6SettingsButton" Margin="5,55,0,0" Click="F6SettingsButton_Click"></Button>
+            <TextBox HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Top" Margin="5,80,5,0"
+                     Name="F6DirectoryPath" Height="20"/>
+            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="75"
+                    Content="F7 bind" Name="F7SettingsButton" Margin="5,105,0,0" Click="F7SettingsButton_Click"></Button>
+            <TextBox HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Top" Margin="5,130,5,0"
+                     Name="F7DirectoryPath" Height="20"/>
+            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Height="20" Width="75" Background="{x:Null}" BorderBrush="{x:Null}"
+                    Content="Close" Name="CloseSettingsButton" Margin="5,155,0,0" Click="CloseButton_Click"
+                    Foreground="Gray"></Button>
+            <StackPanel Width="Auto" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,155,0,0">
+                <RadioButton Name="CopyRadioButton" IsChecked="True" Content="Copy" Foreground="LightGray"></RadioButton>
+                <RadioButton Name="MoveRadioButton" IsChecked="False" Content="Move" Foreground="LightGray"></RadioButton>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
