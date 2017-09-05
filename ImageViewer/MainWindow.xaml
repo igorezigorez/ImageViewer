@@ -5,42 +5,77 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageViewer"
         mc:Ignorable="d"
-        Title="MainWindow" WindowState="Maximized"
+        Title="Image Sorter" WindowState="Maximized"
         PreviewKeyDown="MainGrid_KeyDown">
-
+    <Window.Resources>
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="IsReadOnly" Value="True"></Setter>
+            <Setter Property="Height" Value="20"></Setter>
+        </Style>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+            <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+            <Setter Property="Background" Value="{x:Null}"></Setter>
+            <Setter Property="BorderBrush" Value="{x:Null}"></Setter>
+            <Setter Property="Foreground" Value="LightBlue"></Setter>
+            <Setter Property="Height" Value="20"></Setter>
+            <Setter Property="Width" Value="75"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter x:Name="PART_Content"
+                                              VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                              TextElement.Foreground="{TemplateBinding Foreground}">
+                            </ContentPresenter>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF3F3F46"></Setter>
+                    <Setter Property="BorderBrush" Value="LightBlue"></Setter>
+                    <Setter Property="BorderThickness" Value="1"></Setter>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="White"></Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Name="MainGrid" Background="#FF2D2D30">
-        <Grid Name="ButtonsGrid" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top">
-            <Button Content="Open folder" Name="OpenButton" HorizontalAlignment="Left" Margin="5,0,0,0"
-                    VerticalAlignment="Top" Width="75" Height="20" Click="OpenButton_Click"/>
-            <Button Content="Settings" Name="SettingsButton" HorizontalAlignment="Left" 
-                    VerticalAlignment="Top" Margin="85,0,0,0" Height="20" Width="75"
-                    Click="SettingsButton_Click"></Button>
+        <Grid Name="ButtonsGrid" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top" Margin="0,0,0,0">
+            <Button Name="OpenFileButton" Content="Open File" Click="OpenFileButton_Click"
+                    HorizontalAlignment="Left" Margin="5,0,0,0"></Button>
+            <Button Content="Settings" Name="SettingsButton" HorizontalAlignment="Left" Width="Auto"
+                VerticalAlignment="Top" Margin="85,0,0,0" Click="SettingsButton_Click"></Button>
         </Grid>
+        
         <Grid Margin="0,20,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Name="PictureGrid">
             <Image Name="Picture" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         </Grid>
-        <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Name="SettingsGrid" Width="0"
-              Margin="0,0,0,0">
-            
-            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="75"
-                    Content="F5 bind" Name="F5SettingsButton" Margin="5,5,0,0" Click="F5SettingsButton_Click"></Button>
-            <TextBox HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Top" Margin="5,30,5,0"
-                     Name="F5DirectoryPath" Height="20"/>
-            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="75"
-                    Content="F6 bind" Name="F6SettingsButton" Margin="5,55,0,0" Click="F6SettingsButton_Click"></Button>
-            <TextBox HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Top" Margin="5,80,5,0"
-                     Name="F6DirectoryPath" Height="20"/>
-            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="75"
-                    Content="F7 bind" Name="F7SettingsButton" Margin="5,105,0,0" Click="F7SettingsButton_Click"></Button>
-            <TextBox HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Top" Margin="5,130,5,0"
-                     Name="F7DirectoryPath" Height="20"/>
-            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Height="20" Width="75" Background="{x:Null}" BorderBrush="{x:Null}"
-                    Content="Close" Name="CloseSettingsButton" Margin="5,155,0,0" Click="CloseButton_Click"
-                    Foreground="Gray"></Button>
-            <StackPanel Width="Auto" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,155,0,0">
-                <RadioButton Name="CopyRadioButton" IsChecked="True" Content="Copy" Foreground="LightGray"></RadioButton>
-                <RadioButton Name="MoveRadioButton" IsChecked="False" Content="Move" Foreground="LightGray"></RadioButton>
-            </StackPanel>
-        </Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Name="SettingsScrollViewer" Width="0"
+                      HorizontalAlignment="Right" VerticalAlignment="Stretch">
+            <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Name="SettingsGrid" Width="0" Background="Black">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="45"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Foreground="White" Content="Mode:" Margin="100,0,0,0"></Label>
+                <Button HorizontalAlignment="Right" VerticalAlignment="Top" Width="Auto"
+                    Content="Close" Name="CloseSettingsButton" Margin="0,5,5,0" Click="CloseSettingsButton_Click"
+                        Grid.Row="0"></Button>
+                <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="Auto" Width="Auto"
+                        Content="Add key" Margin="5, 5, 5, 0" Name="AddControlRowButton" Click="AddControlRowButton_Click"></Button>
+                <StackPanel Width="Auto" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="145,7,0,0"
+                            Grid.Row="0" Orientation="Horizontal">
+                    <RadioButton Name="CopyRadioButton" IsChecked="False" Content="Copy" Foreground="LightGray" ></RadioButton>
+                    <RadioButton Name="MoveRadioButton" IsChecked="True" Content="Move" Foreground="LightGray" Margin="5,0,0,0"></RadioButton>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </Window>

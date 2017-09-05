@@ -11,6 +11,7 @@ namespace ImageViewer
 	class Image
 	{
 		public BitmapImage Img { get; private set; }
+
 		public string FullPath
 		{
 			get
