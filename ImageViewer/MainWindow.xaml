@@ -48,7 +48,7 @@
         </Style>
     </Window.Resources>
     <Grid Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Name="MainGrid" Background="#FF2D2D30">
-        <Grid Name="ButtonsGrid" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top" Margin="0,0,0,0">
+        <Grid Name="ButtonsGrid" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top" Margin="0,1,0,0">
             <Button Name="OpenFileButton" Content="Open File" Click="OpenFileButton_Click"
                     HorizontalAlignment="Left" Margin="5,0,0,0"></Button>
             <Button Content="Settings" Name="SettingsButton" HorizontalAlignment="Left" Width="Auto"

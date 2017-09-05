@@ -23,24 +23,13 @@ namespace ImageViewer
 		private string currentImagePath;
 		private KeyManager keyManager = new KeyManager();
 		private Interface interfaceSettings = new Interface();
+		private SettingsManager settingsManager = new SettingsManager();
 
 		public MainWindow()
 		{
 			InitializeComponent();
-
-			//Button closeSettingsButton = new Button();
-			//closeSettingsButton.Name = "CloseSettingsButton";
-			//closeSettingsButton.HorizontalAlignment = HorizontalAlignment.Right;
-			//closeSettingsButton.VerticalAlignment = VerticalAlignment.Top;
-			//closeSettingsButton.Width = Double.NaN;
-			//closeSettingsButton.Content = "Close";
-			//closeSettingsButton.Margin = new Thickness(0, 5, 5, 0);
-			//closeSettingsButton.Click += CloseSettingsButton_Click;
-			//Grid.SetRow(closeSettingsButton, 0);
-			//SettingsGrid.Children.Add(closeSettingsButton);
+			//settingsManager.LoadSettings();
 		}
-
-
 
 		private void AddControlRow()
 		{
@@ -120,46 +109,88 @@ namespace ImageViewer
 			}
 		}
 
+		private void ChangePositionsInRows(int index)
+		{
+			IEnumerable<UIElement> uiButtons = interfaceSettings.buttons.
+				Where(element => Convert.ToInt32(element.Name.Remove(0, element.Name.Length - 1)) > index).
+				Select(element => element);
+			IEnumerable<UIElement> uiLabels = interfaceSettings.labels.
+				Where(element => Convert.ToInt32(element.Name.Remove(0, element.Name.Length - 1)) > index).
+				Select(element => element);
+			IEnumerable<UIElement> uiTextBoxes = interfaceSettings.textBoxes.
+				Where(element => Convert.ToInt32(element.Name.Remove(0, element.Name.Length - 1)) > index).
+				Select(element => element);
+
+			foreach (UIElement button in uiButtons)
+				Grid.SetRow(button, Grid.GetRow(button) - 1);
+			foreach (UIElement label in uiLabels)
+				Grid.SetRow(label, Grid.GetRow(label) - 1);
+			foreach (UIElement textBox in uiTextBoxes)
+				Grid.SetRow(textBox, Grid.GetRow(textBox) - 1);
+		}
+
 		private void DeleteKeyButton_Click(object sender, RoutedEventArgs e)
 		{
 			Button btn = (Button)sender;
 			string index = btn.Name.Remove(0, btn.Name.Length - 1);
 
+			ChangePositionsInRows(Convert.ToInt32(index));
+
 			IEnumerable<UIElement> uiButtons = interfaceSettings.buttons.
 				Where(element => element.Name.Remove(0, element.Name.Length - 1) == index).
 				Select(element => element);
 
+			Button buttonToRemove = new Button();
+
 			foreach (UIElement element in uiButtons)
 			{
 				SettingsGrid.Children.Remove(element);
+				buttonToRemove = (Button)element;
 			}
+
+			interfaceSettings.buttons.Remove(buttonToRemove);
 
 			IEnumerable<UIElement> uiTextBoxes = interfaceSettings.textBoxes.
 				Where(element => element.Name.Remove(0, element.Name.Length - 1) == index).
 				Select(element => element);
 
+			TextBox textBoxToRemove = new TextBox();
+
 			foreach (UIElement element in uiTextBoxes)
 			{
 				SettingsGrid.Children.Remove(element);
+				textBoxToRemove = (TextBox)element;
 			}
+
+			interfaceSettings.textBoxes.Remove(textBoxToRemove);
 
 			IEnumerable<UIElement> uiLabels = interfaceSettings.labels.
 				Where(element => element.Name.Remove(0, element.Name.Length - 1) == index).
 				Select(element => element);
+
+			Label labelToRemove = new Label();
+
 			foreach (UIElement element in uiLabels)
 			{
 				SettingsGrid.Children.Remove(element);
+				labelToRemove = (Label)element;
 			}
+
+			interfaceSettings.labels.Remove(labelToRemove);
 
 			IEnumerable<RowDefinition> uiRows = interfaceSettings.rows.
 				Where(element => element.Name.Remove(0, element.Name.Length - 1) == index).
 				Select(element => element);
+
+			RowDefinition rd = new RowDefinition();
+
 			foreach (RowDefinition element in uiRows)
 			{
 				SettingsGrid.RowDefinitions.Remove(element);
+				rd = element;
 			}
-			//interfaceSettings.DeleteButton("SelectFolderButton" + index);
 
+			interfaceSettings.rows.Remove(rd);
 		}
 
 		private void SettingsButton_Click(object sender, RoutedEventArgs e)
@@ -245,8 +276,11 @@ namespace ImageViewer
 				string index = GetKeyIndex(e.Key.ToString());
 				TextBox fullPathTextBox = GetTextBox(index, "FullPathTextBox");
 				TextBox directoryNameTextBox = GetTextBox(index, "DirectoryNameTextBox");
-				string directoryPath = CreateDirectoryPath(fullPathTextBox.Text, directoryNameTextBox.Text);
-				MoveImage(currentImage.FullPath, directoryPath);
+				if (fullPathTextBox != null)
+				{
+					string directoryPath = CreateDirectoryPath(fullPathTextBox.Text, directoryNameTextBox.Text);
+					MoveImage(currentImage.FullPath, directoryPath);
+				}
 			}
 		}
 
@@ -257,7 +291,8 @@ namespace ImageViewer
 				return fullPath;
 			}
 
-			fullPath = Path.Combine(Path.GetDirectoryName(currentImage.FullPath), directoryName);
+			if(currentImage != null)
+				fullPath = Path.Combine(Path.GetDirectoryName(currentImage.FullPath), directoryName);
 			if (!Directory.Exists(fullPath))
 				Directory.CreateDirectory(fullPath);
 			return fullPath;
