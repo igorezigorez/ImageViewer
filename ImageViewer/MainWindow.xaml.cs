@@ -31,10 +31,13 @@ namespace ImageViewer
 		private void AddControlPanel()
 		{
 			ControlPanel cp = new ControlPanel(controlPanels.Count + 1);
-			SettingsGrid.RowDefinitions.Add(cp.ControlRow);
-			cp.DeleteButton.Click += DeleteKeyButton_Click;
-			SettingsGrid.Children.Add(cp.DeleteButton);
 			cp.KeyTextBox.PreviewKeyDown += Bind_KeyDown;
+			cp.KeyTextBox.TextChanged += KeyTextBox_TextChanged;
+			cp.DeleteButton.Click += DeleteKeyButton_Click;
+			cp.DirectoryNameTextBox.TextChanged += TextBox_TextChanged;
+
+			SettingsGrid.RowDefinitions.Add(cp.ControlRow);
+			SettingsGrid.Children.Add(cp.DeleteButton);
 			SettingsGrid.Children.Add(cp.KeyLabel);
 			SettingsGrid.Children.Add(cp.DirectoryNameTextBox);
 			SettingsGrid.Children.Add(cp.KeyTextBox);
@@ -173,38 +176,48 @@ namespace ImageViewer
 			}
 		}
 
-		private void TextBox_TextChanged(object sender, RoutedEventArgs e)
-		{
-			TextBox txtBox = (TextBox)sender;
-			string index = txtBox.Name.Remove(0, txtBox.Name.Length - 1);
-
-			if (txtBox.Name == String.Concat("FullPathTextBox", index))
-			{
-				TextBox directoryNameTextBox = GetTextBox(index, "DirectoryNameTextBox");
-				directoryNameTextBox.Text = "";
-			}
-
-			if (txtBox.Name.Contains("DirectoryNameTextBox"))
-			{
-				TextBox fullPathTextBox = GetTextBox(index, "FullPathTextBox");
-				fullPathTextBox.Text = "";
-			}
-		}
-
 		private void MainGrid_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.Key == Key.Right)
+			if (e.Key == Key.Right || e.Key == Key.Space)
 				ShowNextImage();
-			if (e.Key == Key.Left)
+			if (e.Key == Key.Left || e.Key == Key.Back)
 				ShowPreviousImage();
 			if (keyManager.IsKeyBusy(e.Key.ToString()))
 			{
 				int index = GetKeyIndex(e.Key.ToString());
 				string directoryName = GetTextBoxText(index);
-				string directoryPath = Path.Combine(Path.GetDirectoryName(currentImage.FullPath), directoryName);
-				if (!Directory.Exists(directoryPath))
-					Directory.CreateDirectory(directoryPath);
-				MoveImage(currentImage.FullPath, directoryPath);
+				if (currentImage != null)
+				{
+					string directoryPath = Path.Combine(Path.GetDirectoryName(currentImage.FullPath), directoryName);
+					if (!Directory.Exists(directoryPath))
+						Directory.CreateDirectory(directoryPath);
+					MoveImage(currentImage.FullPath, directoryPath);
+				}
+			}
+		}
+
+		private void KeyTextBox_TextChanged(object sender, RoutedEventArgs e)
+		{
+			TextBox txtBox = (TextBox)sender;
+			if(!keyManager.IsKeyBusy(txtBox.Text))
+			keyManager.AddKey(txtBox.Text);
+		}
+
+		private void TextBox_TextChanged(object sender, RoutedEventArgs e)
+		{
+			TextBox txtBox = (TextBox)sender;
+			int index = Convert.ToInt32(txtBox.Name.Remove(0, txtBox.Name.Length - 1));
+			string keyTextBoxContent = String.Empty;
+
+			foreach (ControlPanel cp in controlPanels)
+			{
+				if (cp.Index == index 
+					&& cp.KeyTextBox.Text == String.Empty 
+					&& txtBox.Text.Length == 1
+					&& !keyManager.IsKeyBusy(txtBox.Text))
+				{
+					cp.KeyTextBox.Text = txtBox.Text;
+				}
 			}
 		}
 

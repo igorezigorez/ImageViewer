@@ -6,6 +6,6 @@ namespace ImageViewer
 {
 	class SettingsManager
 	{
-		public string CurrentSettings { get; set; }
+		
 	}
 }
