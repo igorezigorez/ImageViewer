@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ControlPanel.cs" />
     <Compile Include="Interface.cs" />
     <Compile Include="KeyManager.cs" />
     <Compile Include="SettingsManager.cs" />

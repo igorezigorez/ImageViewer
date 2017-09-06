@@ -12,9 +12,6 @@ using ImageViewer;
 
 namespace ImageViewer
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
 	public partial class MainWindow : Window
 	{
 		private Image currentImage;
@@ -24,72 +21,55 @@ namespace ImageViewer
 		private KeyManager keyManager = new KeyManager();
 		private Interface interfaceSettings = new Interface();
 		private SettingsManager settingsManager = new SettingsManager();
+		private List<ControlPanel> controlPanels = new List<ControlPanel>();
 
 		public MainWindow()
 		{
 			InitializeComponent();
-			//settingsManager.LoadSettings();
 		}
 
-		private void AddControlRow()
+		private void AddControlPanel()
 		{
-			RowDefinition rd = new RowDefinition();
-			rd.Height = new GridLength(60, GridUnitType.Pixel);
-			int rdCount = SettingsGrid.RowDefinitions.Count;
-			rd.Name = String.Concat("RowDefenition", rdCount);
-			SettingsGrid.RowDefinitions.Add(rd);
-			interfaceSettings.AddRow(rd);
-			rdCount++;
-			int marginRatio = rdCount - 1;
+			ControlPanel cp = new ControlPanel(controlPanels.Count + 1);
+			SettingsGrid.RowDefinitions.Add(cp.ControlRow);
+			cp.DeleteButton.Click += DeleteKeyButton_Click;
+			SettingsGrid.Children.Add(cp.DeleteButton);
+			cp.KeyTextBox.PreviewKeyDown += Bind_KeyDown;
+			SettingsGrid.Children.Add(cp.KeyLabel);
+			SettingsGrid.Children.Add(cp.DirectoryNameTextBox);
+			SettingsGrid.Children.Add(cp.KeyTextBox);
+			SettingsGrid.Children.Add(cp.SubdirectoryLabel);
+			controlPanels.Add(cp);
+		}
 
-			#region
-			Button deleteKeyButton = interfaceSettings.CreateButton(String.Concat("DeleteKeyButton", marginRatio), Interface.ButtonType.DeleteKeyButton);
-			deleteKeyButton.Margin = new Thickness(83, 4, 0, 0);
-			Grid.SetRow(deleteKeyButton, marginRatio);
-			deleteKeyButton.Click += DeleteKeyButton_Click;
-			SettingsGrid.Children.Add(deleteKeyButton);
-			interfaceSettings.AddButton(deleteKeyButton);
+		private void AddControlPanel(int index)
+		{
+			RowDefinition row = new RowDefinition();
+			row.Height = new GridLength(45, GridUnitType.Pixel);
+			SettingsGrid.RowDefinitions.Add(row);
+			int newIndex = 1;
 
-			Button selectFolderButton = interfaceSettings.CreateButton(String.Concat("SelectFolderButton", marginRatio), Interface.ButtonType.SelectButton);
-			selectFolderButton.Click += SelectFolder_Click;
-			selectFolderButton.Margin = new Thickness(148, 29, 0, 0);
-			Grid.SetRow(selectFolderButton, marginRatio);
-			SettingsGrid.Children.Add(selectFolderButton);
-			interfaceSettings.AddButton(selectFolderButton);
+			ControlPanel cpToDelete = new ControlPanel(controlPanels.Count + 1);
 
-			TextBox fullPathTextBox = interfaceSettings.CreateTextBox(String.Concat("FullPathTextBox", marginRatio), Interface.TextBoxType.FullPathTextBox);
-			fullPathTextBox.Margin = new Thickness(5, 30, 5, 0);
-			fullPathTextBox.TextChanged += TextBox_TextChanged;
-			Grid.SetRow(fullPathTextBox, marginRatio);
-			SettingsGrid.Children.Add(fullPathTextBox);
-			interfaceSettings.AddTextBox(fullPathTextBox);
-
-			TextBox directoryNameTextBox = interfaceSettings.CreateTextBox(String.Concat("DirectoryNameTextBox", marginRatio), Interface.TextBoxType.DirectoryNameTextBox);
-			directoryNameTextBox.Margin = new Thickness(200, 30, 5, 0);
-			directoryNameTextBox.TextChanged += TextBox_TextChanged;
-			Grid.SetRow(directoryNameTextBox, marginRatio);
-			SettingsGrid.Children.Add(directoryNameTextBox);
-			interfaceSettings.AddTextBox(directoryNameTextBox);
-
-			TextBox keyTextBox = interfaceSettings.CreateTextBox(String.Concat("KeyTextBox", marginRatio), Interface.TextBoxType.KeyTextBox);
-			keyTextBox.Margin = new Thickness(38, 4, 0, 0);
-			keyTextBox.PreviewKeyDown += Bind_KeyDown;
-			Grid.SetRow(keyTextBox, marginRatio);
-			SettingsGrid.Children.Add(keyTextBox);
-			interfaceSettings.AddTextBox(keyTextBox);
-
-			Label keyLabel = interfaceSettings.CreateLabel(String.Concat("KeyLabel", marginRatio), Interface.LabelType.KeyLabel);
-			keyLabel.Margin = new Thickness(5, 0, 0, 0);
-			Grid.SetRow(keyLabel, marginRatio);
-			SettingsGrid.Children.Add(keyLabel);
-			interfaceSettings.AddLabel(keyLabel);
-
-			Label orLabel = interfaceSettings.CreateLabel(String.Concat("OrLabel", marginRatio), Interface.LabelType.OrLabel);
-			orLabel.Margin = new Thickness(180, 25, 0, 0);
-			Grid.SetRow(orLabel, marginRatio);
-			SettingsGrid.Children.Add(orLabel);
-			interfaceSettings.AddLabel(orLabel);
-			#endregion
+			foreach(ControlPanel cp in controlPanels)
+			{
+				if (cp.Index != index)
+				{
+					cp.ChangeIndex(newIndex);
+					SettingsGrid.RowDefinitions.Add(cp.ControlRow);
+					SettingsGrid.Children.Add(cp.DeleteButton);
+					SettingsGrid.Children.Add(cp.KeyLabel);
+					SettingsGrid.Children.Add(cp.KeyTextBox);
+					SettingsGrid.Children.Add(cp.DirectoryNameTextBox);
+					SettingsGrid.Children.Add(cp.SubdirectoryLabel);
+					newIndex++;
+				}
+				else if (cp.Index == index)
+				{
+					cpToDelete = cp;
+				}
+			}
+			controlPanels.Remove(cpToDelete);
 		}
 
 		private void OpenFileButton_Click(object sender, RoutedEventArgs e)
@@ -132,65 +112,10 @@ namespace ImageViewer
 		private void DeleteKeyButton_Click(object sender, RoutedEventArgs e)
 		{
 			Button btn = (Button)sender;
-			string index = btn.Name.Remove(0, btn.Name.Length - 1);
-
-			ChangePositionsInRows(Convert.ToInt32(index));
-
-			IEnumerable<UIElement> uiButtons = interfaceSettings.buttons.
-				Where(element => element.Name.Remove(0, element.Name.Length - 1) == index).
-				Select(element => element);
-
-			Button buttonToRemove = new Button();
-
-			foreach (UIElement element in uiButtons)
-			{
-				SettingsGrid.Children.Remove(element);
-				buttonToRemove = (Button)element;
-			}
-
-			interfaceSettings.buttons.Remove(buttonToRemove);
-
-			IEnumerable<UIElement> uiTextBoxes = interfaceSettings.textBoxes.
-				Where(element => element.Name.Remove(0, element.Name.Length - 1) == index).
-				Select(element => element);
-
-			TextBox textBoxToRemove = new TextBox();
-
-			foreach (UIElement element in uiTextBoxes)
-			{
-				SettingsGrid.Children.Remove(element);
-				textBoxToRemove = (TextBox)element;
-			}
-
-			interfaceSettings.textBoxes.Remove(textBoxToRemove);
-
-			IEnumerable<UIElement> uiLabels = interfaceSettings.labels.
-				Where(element => element.Name.Remove(0, element.Name.Length - 1) == index).
-				Select(element => element);
-
-			Label labelToRemove = new Label();
-
-			foreach (UIElement element in uiLabels)
-			{
-				SettingsGrid.Children.Remove(element);
-				labelToRemove = (Label)element;
-			}
-
-			interfaceSettings.labels.Remove(labelToRemove);
-
-			IEnumerable<RowDefinition> uiRows = interfaceSettings.rows.
-				Where(element => element.Name.Remove(0, element.Name.Length - 1) == index).
-				Select(element => element);
-
-			RowDefinition rd = new RowDefinition();
-
-			foreach (RowDefinition element in uiRows)
-			{
-				SettingsGrid.RowDefinitions.Remove(element);
-				rd = element;
-			}
-
-			interfaceSettings.rows.Remove(rd);
+			int index = Convert.ToInt32(btn.Name.Remove(0, btn.Name.Length - 1));
+			SettingsGrid.Children.Clear();
+			SettingsGrid.RowDefinitions.Clear();
+			AddControlPanel(index);
 		}
 
 		private void SettingsButton_Click(object sender, RoutedEventArgs e)
@@ -198,6 +123,7 @@ namespace ImageViewer
 			PictureGrid.Margin = new Thickness(0, 20, 300, 0);
 			SettingsGrid.Width = 340;
 			SettingsScrollViewer.Width = 360;
+			ControlPanelButtons.Width = 320;
 		}
 
 		private void MoveImage(string imagePath, string directoryPath)
@@ -273,15 +199,23 @@ namespace ImageViewer
 				ShowPreviousImage();
 			if (keyManager.IsKeyBusy(e.Key.ToString()))
 			{
-				string index = GetKeyIndex(e.Key.ToString());
-				TextBox fullPathTextBox = GetTextBox(index, "FullPathTextBox");
-				TextBox directoryNameTextBox = GetTextBox(index, "DirectoryNameTextBox");
-				if (fullPathTextBox != null)
-				{
-					string directoryPath = CreateDirectoryPath(fullPathTextBox.Text, directoryNameTextBox.Text);
-					MoveImage(currentImage.FullPath, directoryPath);
-				}
+				int index = GetKeyIndex(e.Key.ToString());
+				string directoryName = GetTextBoxText(index);
+				string directoryPath = Path.Combine(Path.GetDirectoryName(currentImage.FullPath), directoryName);
+				if (!Directory.Exists(directoryPath))
+					Directory.CreateDirectory(directoryPath);
+				MoveImage(currentImage.FullPath, directoryPath);
 			}
+		}
+
+		private string GetTextBoxText(int index)
+		{
+			foreach(ControlPanel cp in controlPanels)
+			{
+				if (cp.Index == index)
+					return cp.DirectoryNameTextBox.Text;
+			}
+			return String.Empty;
 		}
 
 		private string CreateDirectoryPath(string fullPath, string directoryName)
@@ -310,17 +244,14 @@ namespace ImageViewer
 			return null;
 		}
 
-		private string GetKeyIndex(string key)
+		private int GetKeyIndex(string key)
 		{
-			IEnumerable<TextBox> textBoxes = interfaceSettings.textBoxes.
-				Where(txtBox => txtBox.Name.Contains("KeyTextBox") == true && txtBox.Text == key).
-				Select(txtBox => txtBox);
-
-			foreach (TextBox txtBox in textBoxes)
+			foreach(ControlPanel cp in controlPanels)
 			{
-				return txtBox.Name.Remove(0, txtBox.Name.Length - 1);
+				if (cp.KeyTextBox.Text == key)
+					return cp.Index;
 			}
-			return "";
+			return 0;
 		}
 
 		private void ShowNextImage()
@@ -375,6 +306,7 @@ namespace ImageViewer
 			PictureGrid.Margin = new Thickness(0, 20, 0, 0);
 			SettingsGrid.Width = 0;
 			SettingsScrollViewer.Width = 0;
+			ControlPanelButtons.Width = 0;
 		}
 
 		private void SelectFolder_Click(object sender, RoutedEventArgs e)
@@ -394,7 +326,8 @@ namespace ImageViewer
 
 		private void AddControlRowButton_Click(object sender, RoutedEventArgs e)
 		{
-			AddControlRow();
+			//AddControlRow();
+			AddControlPanel();
 		}
 	}
 }

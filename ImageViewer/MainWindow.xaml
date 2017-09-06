@@ -54,28 +54,29 @@
             <Button Content="Settings" Name="SettingsButton" HorizontalAlignment="Left" Width="Auto"
                 VerticalAlignment="Top" Margin="85,0,0,0" Click="SettingsButton_Click"></Button>
         </Grid>
-        
+
         <Grid Margin="0,20,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Name="PictureGrid">
             <Image Name="Picture" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         </Grid>
+        
         <ScrollViewer VerticalScrollBarVisibility="Auto" Name="SettingsScrollViewer" Width="0"
                       HorizontalAlignment="Right" VerticalAlignment="Stretch">
             <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Name="SettingsGrid" Width="0" Background="Black">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="45"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Label Foreground="White" Content="Mode:" Margin="100,0,0,0"></Label>
-                <Button HorizontalAlignment="Right" VerticalAlignment="Top" Width="Auto"
-                    Content="Close" Name="CloseSettingsButton" Margin="0,5,5,0" Click="CloseSettingsButton_Click"
-                        Grid.Row="0"></Button>
-                <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="Auto" Width="Auto"
-                        Content="Add key" Margin="5, 5, 5, 0" Name="AddControlRowButton" Click="AddControlRowButton_Click"></Button>
-                <StackPanel Width="Auto" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="145,7,0,0"
-                            Grid.Row="0" Orientation="Horizontal">
-                    <RadioButton Name="CopyRadioButton" IsChecked="False" Content="Copy" Foreground="LightGray" ></RadioButton>
-                    <RadioButton Name="MoveRadioButton" IsChecked="True" Content="Move" Foreground="LightGray" Margin="5,0,0,0"></RadioButton>
-                </StackPanel>
             </Grid>
         </ScrollViewer>
+        <Grid Height="45" VerticalAlignment="Top" HorizontalAlignment="Right" Name="ControlPanelButtons" Margin="0,0,20,0" Width="0">
+            <Label Foreground="White" Content="Mode:" Margin="100,0,0,0"></Label>
+            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Width="Auto"
+                    Content="Close" Name="CloseSettingsButton" Margin="0,5,5,0" Click="CloseSettingsButton_Click"></Button>
+            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Height="Auto" Width="Auto"
+                        Content="Add key" Margin="5, 5, 5, 0" Name="AddControlRowButton" Click="AddControlRowButton_Click"></Button>
+            <StackPanel Width="Auto" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="145,7,0,0" Orientation="Horizontal">
+                <RadioButton Name="CopyRadioButton" IsChecked="False" Content="Copy" Foreground="LightGray" ></RadioButton>
+                <RadioButton Name="MoveRadioButton" IsChecked="True" Content="Move" Foreground="LightGray" Margin="5,0,0,0"></RadioButton>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>
