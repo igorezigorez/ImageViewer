@@ -8,10 +8,13 @@ using System.Windows.Media.Imaging;
 using System.Collections.Generic;
 using Microsoft.Win32;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using ImageViewer;
 
 namespace ImageViewer
 {
+	public delegate void AddControlPanelDelegate();
+
 	public partial class MainWindow : Window
 	{
 		private Image currentImage;
@@ -19,13 +22,44 @@ namespace ImageViewer
 		private bool isPictureOpened = false;
 		private string currentImagePath;
 		private KeyManager keyManager = new KeyManager();
+		private Settings settings = new Settings();
 		private Interface interfaceSettings = new Interface();
-		private SettingsManager settingsManager = new SettingsManager();
 		private List<ControlPanel> controlPanels = new List<ControlPanel>();
 
 		public MainWindow()
 		{
 			InitializeComponent();
+			AddControlPanelDelegate addControlPanel = new AddControlPanelDelegate(AddControlPanel);
+			LoadSettingsFromFile();
+		}
+
+		private void SaveSettings(object sender)
+		{
+			BinaryFormatter binFormat = new BinaryFormatter();
+			using (Stream fStream = new FileStream("settings.dat", FileMode.Create, FileAccess.Write, FileShare.None))
+			{
+				binFormat.Serialize(fStream, sender);
+			}
+		}
+
+		private void LoadSettingsFromFile()
+		{
+			BinaryFormatter binFormat = new BinaryFormatter();
+			Settings settingsFromFile;
+
+			using (Stream fStream = File.OpenRead("settings.dat"))
+			{
+				if (fStream.Length != 0)
+				{
+					settingsFromFile = (Settings)binFormat.Deserialize(fStream);
+				}
+				else
+				{
+					settingsFromFile = new Settings();
+				}
+			}
+
+			SettingsManager.LoadSettings(controlPanels, settingsFromFile, AddControlPanel);
 		}
 
 		private void AddControlPanel()
@@ -119,6 +153,8 @@ namespace ImageViewer
 			SettingsGrid.Children.Clear();
 			SettingsGrid.RowDefinitions.Clear();
 			AddControlPanel(index);
+			SettingsManager.RefreshSettings(controlPanels, settings);
+			SaveSettings(settings);
 		}
 
 		private void SettingsButton_Click(object sender, RoutedEventArgs e)
@@ -127,6 +163,8 @@ namespace ImageViewer
 			SettingsGrid.Width = 340;
 			SettingsScrollViewer.Width = 360;
 			ControlPanelButtons.Width = 320;
+			SettingsManager.RefreshSettings(controlPanels, settings);
+			SaveSettings(settings);
 		}
 
 		private void MoveImage(string imagePath, string directoryPath)
@@ -194,6 +232,9 @@ namespace ImageViewer
 					MoveImage(currentImage.FullPath, directoryPath);
 				}
 			}
+
+			SettingsManager.RefreshSettings(controlPanels, settings);
+			SaveSettings(settings);
 		}
 
 		private void KeyTextBox_TextChanged(object sender, RoutedEventArgs e)
@@ -320,6 +361,9 @@ namespace ImageViewer
 			SettingsGrid.Width = 0;
 			SettingsScrollViewer.Width = 0;
 			ControlPanelButtons.Width = 0;
+
+			SettingsManager.RefreshSettings(controlPanels, settings);
+			SaveSettings(settings);
 		}
 
 		private void SelectFolder_Click(object sender, RoutedEventArgs e)
@@ -341,6 +385,9 @@ namespace ImageViewer
 		{
 			//AddControlRow();
 			AddControlPanel();
+
+			SettingsManager.RefreshSettings(controlPanels, settings);
+			SaveSettings(settings);
 		}
 	}
 }

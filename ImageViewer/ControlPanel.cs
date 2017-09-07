@@ -8,6 +8,7 @@ using ImageViewer;
 
 namespace ImageViewer
 {
+	[Serializable]
 	class ControlPanel
 	{
 		const string DELETE_KEY_BUTTON_NAME = "DeleteButton";

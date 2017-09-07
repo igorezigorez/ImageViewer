@@ -8,6 +8,7 @@ using System.IO;
 
 namespace ImageViewer
 {
+	[Serializable]
 	class Image
 	{
 		public BitmapImage Img { get; private set; }
