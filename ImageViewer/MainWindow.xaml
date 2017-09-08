@@ -48,15 +48,22 @@
         </Style>
     </Window.Resources>
     <Grid Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Name="MainGrid" Background="#FF2D2D30">
-        <Grid Name="ButtonsGrid" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top" Margin="0,1,0,0">
+        <Grid Name="ButtonsGrid" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top" Margin="-1,1,1,0">
             <Button Name="OpenFileButton" Content="Open File" Click="OpenFileButton_Click"
                     HorizontalAlignment="Left" Margin="5,0,0,0"></Button>
             <Button Content="Settings" Name="SettingsButton" HorizontalAlignment="Left" Width="Auto"
-                VerticalAlignment="Top" Margin="85,0,0,0" Click="SettingsButton_Click"></Button>
+                VerticalAlignment="Top" Margin="155,0,0,0" Click="SettingsButton_Click"></Button>
+            <Button Name="FullScreenButton" Content="FullScreen" Margin="85, 0, 0, 0" VerticalAlignment="Top"
+                    HorizontalAlignment="Left" Click="FullScreenButton_Click" Width="Auto"></Button>
         </Grid>
+
 
         <Grid Margin="0,20,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Name="PictureGrid">
             <Image Name="Picture" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="0" Name="FullScreenGrid">
+                <Button VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,0,0,0" Width="Auto"
+                    Height="Auto" Content="Show interface" Click="CloseFullScreenButton_Click"></Button>
+            </Grid>
         </Grid>
         
         <ScrollViewer VerticalScrollBarVisibility="Auto" Name="SettingsScrollViewer" Width="0"

@@ -31,6 +31,28 @@ namespace ImageViewer
 			InitializeComponent();
 			AddControlPanelDelegate addControlPanel = new AddControlPanelDelegate(AddControlPanel);
 			LoadSettingsFromFile();
+			keyManager.AddKey(Key.Right.ToString());
+			keyManager.AddKey(Key.Left.ToString());
+			keyManager.AddKey(Key.Space.ToString());
+			keyManager.AddKey(Key.Back.ToString());
+		}
+
+		private void FullScreenButton_Click(object sender, RoutedEventArgs e)
+		{
+			ButtonsGrid.Height = 0;
+			PictureGrid.Margin = new Thickness(0, 0, 0, 0);
+			FullScreenGrid.Height = 20;
+			WindowStyle = WindowStyle.None;
+			//ResizeMode = ResizeMode.NoResize;
+		}
+
+		private void CloseFullScreenButton_Click(object sender, RoutedEventArgs e)
+		{
+			ButtonsGrid.Height = 20;
+			PictureGrid.Margin = new Thickness(0, 20, 0, 0);
+			FullScreenGrid.Height = 0;
+			WindowStyle = WindowStyle.SingleBorderWindow;
+			//ResizeMode = ResizeMode.CanResize;
 		}
 
 		private void SaveSettings(object sender)
@@ -46,6 +68,9 @@ namespace ImageViewer
 		{
 			BinaryFormatter binFormat = new BinaryFormatter();
 			Settings settingsFromFile;
+
+			if (!File.Exists("settings.dat"))
+				return;
 
 			using (Stream fStream = File.OpenRead("settings.dat"))
 			{
@@ -88,7 +113,7 @@ namespace ImageViewer
 
 			ControlPanel cpToDelete = new ControlPanel(controlPanels.Count + 1);
 
-			foreach(ControlPanel cp in controlPanels)
+			foreach (ControlPanel cp in controlPanels)
 			{
 				if (cp.Index != index)
 				{
@@ -216,20 +241,29 @@ namespace ImageViewer
 
 		private void MainGrid_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.Key == Key.Right || e.Key == Key.Space)
-				ShowNextImage();
-			if (e.Key == Key.Left || e.Key == Key.Back)
-				ShowPreviousImage();
-			if (keyManager.IsKeyBusy(e.Key.ToString()))
+			if (SettingsGrid.Width != 340)
 			{
-				int index = GetKeyIndex(e.Key.ToString());
-				string directoryName = GetTextBoxText(index);
-				if (currentImage != null)
+				if (e.Key == Key.Right || e.Key == Key.Space)
 				{
-					string directoryPath = Path.Combine(Path.GetDirectoryName(currentImage.FullPath), directoryName);
-					if (!Directory.Exists(directoryPath))
-						Directory.CreateDirectory(directoryPath);
-					MoveImage(currentImage.FullPath, directoryPath);
+					ShowNextImage();
+					return;
+				}
+				if (e.Key == Key.Left || e.Key == Key.Back)
+				{
+					ShowPreviousImage();
+					return;
+				}
+				if (keyManager.IsKeyBusy(e.Key.ToString()))
+				{
+					int index = GetKeyIndex(e.Key.ToString());
+					string directoryName = GetTextBoxText(index);
+					if (currentImage != null)
+					{
+						string directoryPath = Path.Combine(Path.GetDirectoryName(currentImage.FullPath), directoryName);
+						if (!Directory.Exists(directoryPath))
+							Directory.CreateDirectory(directoryPath);
+						MoveImage(currentImage.FullPath, directoryPath);
+					}
 				}
 			}
 
@@ -366,24 +400,8 @@ namespace ImageViewer
 			SaveSettings(settings);
 		}
 
-		private void SelectFolder_Click(object sender, RoutedEventArgs e)
-		{
-			Button btn = (Button)sender;
-			string index = btn.Name.Remove(0, btn.Name.Length - 1);
-			using (var dlg = new System.Windows.Forms.FolderBrowserDialog())
-			{
-				System.Windows.Forms.DialogResult result = dlg.ShowDialog();
-				if (result == System.Windows.Forms.DialogResult.OK)
-				{
-					TextBox txtBox = GetTextBox(index, "FullPathTextBox");
-					txtBox.Text = dlg.SelectedPath;
-				}
-			}
-		}
-
 		private void AddControlRowButton_Click(object sender, RoutedEventArgs e)
 		{
-			//AddControlRow();
 			AddControlPanel();
 
 			SettingsManager.RefreshSettings(controlPanels, settings);
