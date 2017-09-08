@@ -6,10 +6,14 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Collections.Generic;
-using Microsoft.Win32;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Windows.Forms;
 using ImageViewer;
+using Button = System.Windows.Controls.Button;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace ImageViewer
 {
@@ -96,11 +100,17 @@ namespace ImageViewer
 			cp.DirectoryNameTextBox.TextChanged += TextBox_TextChanged;
 
 			SettingsGrid.RowDefinitions.Add(cp.ControlRow);
-			SettingsGrid.Children.Add(cp.DeleteButton);
-			SettingsGrid.Children.Add(cp.KeyLabel);
-			SettingsGrid.Children.Add(cp.DirectoryNameTextBox);
-			SettingsGrid.Children.Add(cp.KeyTextBox);
-			SettingsGrid.Children.Add(cp.SubdirectoryLabel);
+
+			var panel = new StackPanel();
+			Grid.SetRow(panel, controlPanels.Count + 1);
+
+			panel.Children.Add(cp.DeleteButton);
+			panel.Children.Add(cp.KeyLabel);
+			panel.Children.Add(cp.DirectoryNameTextBox);
+			panel.Children.Add(cp.KeyTextBox);
+			panel.Children.Add(cp.SubdirectoryLabel);
+
+			SettingsGrid.Children.Add(panel);
 			controlPanels.Add(cp);
 		}
 

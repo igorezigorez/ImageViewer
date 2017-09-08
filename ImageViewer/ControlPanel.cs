@@ -75,10 +75,12 @@ namespace ImageViewer
 
 		public Button CreateButton()
 		{
-			Button btn = new Button();
+			Button btn = new Button
+			{
+				Name = String.Concat(DELETE_KEY_BUTTON_NAME, Index),
+				Margin = new Thickness(0, 5, 25, 0)
+			};
 
-			btn.Name = String.Concat(DELETE_KEY_BUTTON_NAME, Index);
-			btn.Margin = new Thickness(0, 5, 25, 0);
 			btn.VerticalAlignment = VerticalAlignment.Top;
 			btn.HorizontalAlignment = HorizontalAlignment.Right;
 			btn.Content = "Delete";
@@ -89,9 +91,12 @@ namespace ImageViewer
 
 		public TextBox CreateTextBox(TextBoxType type)
 		{
-			TextBox txtBox = new TextBox();
-			txtBox.HorizontalAlignment = HorizontalAlignment.Left;
-			txtBox.VerticalAlignment = VerticalAlignment.Top;
+			TextBox txtBox = new TextBox
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
+
 			Grid.SetRow(txtBox, Index);
 
 			if (type == TextBoxType.DirectoryNameTextBox)
@@ -115,12 +120,15 @@ namespace ImageViewer
 
 		public Label CreateLabel(LabelType type)
 		{
-			Label lbl = new Label();
+			Label lbl = new Label
+			{
+				VerticalAlignment = VerticalAlignment.Top,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				Foreground = new SolidColorBrush(Colors.LightGray)
+			};
+
 			Grid.SetRow(lbl, Index);
-			lbl.VerticalAlignment = VerticalAlignment.Top;
-			lbl.HorizontalAlignment = HorizontalAlignment.Left;
-			lbl.Foreground = new SolidColorBrush(Colors.LightGray);
-			
+
 			if (type == LabelType.KeyLabel)
 			{
 				lbl.Name = String.Concat(KEY_LABEL_NAME, Index);

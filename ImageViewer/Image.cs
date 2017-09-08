@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.IO;
 
@@ -11,20 +7,12 @@ namespace ImageViewer
 	[Serializable]
 	class Image
 	{
-		public BitmapImage Img { get; private set; }
+		public BitmapImage Img { get; }
 
 		public string FullPath
 		{
-			get
-			{
-				if (Img != null)
-					return Img.UriSource.LocalPath.ToString();
-				return null;
-			}
-			private set
-			{
-				FullPath = value;
-			}
+			get => Img?.UriSource.LocalPath;
+			private set => FullPath = value;
 		}
 		public string Name
 		{

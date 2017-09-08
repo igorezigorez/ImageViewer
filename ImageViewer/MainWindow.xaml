@@ -67,14 +67,15 @@
         </Grid>
         
         <ScrollViewer VerticalScrollBarVisibility="Auto" Name="SettingsScrollViewer" Width="0"
-                      HorizontalAlignment="Right" VerticalAlignment="Stretch">
-            <Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Name="SettingsGrid" Width="0" Background="Black">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="45"></RowDefinition>
-                </Grid.RowDefinitions>
-            </Grid>
-        </ScrollViewer>
-        <Grid Height="45" VerticalAlignment="Top" HorizontalAlignment="Right" Name="ControlPanelButtons" Margin="0,0,20,0" Width="0">
+                      HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="Aqua">
+			
+				<Grid HorizontalAlignment="Right" VerticalAlignment="Stretch" Name="SettingsGrid" Width="0" Margin="5,5,5,5" Background="Black">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="45"></RowDefinition>
+					</Grid.RowDefinitions>
+				</Grid>
+		</ScrollViewer>
+		<Grid Height="45" VerticalAlignment="Top" HorizontalAlignment="Right" Name="ControlPanelButtons" Margin="25,25,25,25" Width="0">
             <Label Foreground="White" Content="Mode:" Margin="100,0,0,0"></Label>
             <Button HorizontalAlignment="Right" VerticalAlignment="Top" Width="Auto"
                     Content="Close" Name="CloseSettingsButton" Margin="0,5,5,0" Click="CloseSettingsButton_Click"></Button>

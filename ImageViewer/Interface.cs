@@ -90,11 +90,11 @@ namespace ImageViewer
 			Button btn = new Button();
 			btn.Name = name;
 
+			SetControlSettings(btn);
+
 			if (type == ButtonType.SelectButton)
 			{
 				btn.Content = "Select";
-				btn.VerticalAlignment = VerticalAlignment.Top;
-				btn.HorizontalAlignment = HorizontalAlignment.Left;
 				btn.Foreground = new SolidColorBrush(Colors.Gray);
 				btn.Height = 22;
 				btn.BorderBrush = null;
@@ -106,8 +106,6 @@ namespace ImageViewer
 			if(type == ButtonType.DeleteKeyButton)
 			{
 				btn.Content = "Delete key";
-				btn.VerticalAlignment = VerticalAlignment.Top;
-				btn.HorizontalAlignment = HorizontalAlignment.Left;
 				return btn;
 			}
 
@@ -119,11 +117,12 @@ namespace ImageViewer
 			TextBox txtBox = new TextBox();
 			txtBox.Name = name;
 
+			SetControlSettings(txtBox);
+
 			if (type == TextBoxType.FullPathTextBox)
 			{
+				
 				txtBox.IsReadOnly = false;
-				txtBox.HorizontalAlignment = HorizontalAlignment.Left;
-				txtBox.VerticalAlignment = VerticalAlignment.Top;
 				txtBox.Width = 144;
 				txtBox.Height = 20;
 				return txtBox;
@@ -132,8 +131,6 @@ namespace ImageViewer
 			if(type == TextBoxType.DirectoryNameTextBox)
 			{
 				txtBox.IsReadOnly = false;
-				txtBox.HorizontalAlignment = HorizontalAlignment.Left;
-				txtBox.VerticalAlignment = VerticalAlignment.Top;
 				txtBox.Width = 100;
 				return txtBox;
 			}
@@ -141,8 +138,6 @@ namespace ImageViewer
 			if(type == TextBoxType.KeyTextBox)
 			{
 				txtBox.IsReadOnly = true;
-				txtBox.HorizontalAlignment = HorizontalAlignment.Left;
-				txtBox.VerticalAlignment = VerticalAlignment.Top;
 				txtBox.Width = 40;
 
 				return txtBox;
@@ -151,5 +146,17 @@ namespace ImageViewer
 			return txtBox;
 		}
 
+		private static void SetControlSettings(Control txtBox)
+		{
+			txtBox.HorizontalAlignment = HorizontalAlignment.Left;
+			txtBox.VerticalAlignment = VerticalAlignment.Top;
+		}
+
+
+		private static void SetTextBoxSettings(TextBox txtBox)
+		{
+			txtBox.HorizontalAlignment = HorizontalAlignment.Left;
+			txtBox.VerticalAlignment = VerticalAlignment.Top;
+		}
 	}
 }
