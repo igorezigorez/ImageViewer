@@ -5,16 +5,16 @@ namespace ImageViewer
 {
 	class KeyManager
 	{
-		private List<string> busyKeys;
+		private List<string> usedKeys;
 
 		public KeyManager()
 		{
-			busyKeys = new List<string>();
+			usedKeys = new List<string>();
 		}
 
-		public bool IsKeyBusy(string key)
+		public bool IsKeyUsed(string key)
 		{
-			int index = busyKeys.IndexOf(key);
+			int index = usedKeys.IndexOf(key);
 			if (index == -1)
 				return false;
 			return true;
@@ -22,12 +22,12 @@ namespace ImageViewer
 
 		public void AddKey(string key)
 		{
-			busyKeys.Add(key);
+			usedKeys.Add(key);
 		}
 
 		public void RemoveKey(string key)
 		{
-			busyKeys.Remove(key);
+			usedKeys.Remove(key);
 		}
 	}
 }

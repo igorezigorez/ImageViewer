@@ -151,26 +151,6 @@ namespace ImageViewer
 			}
 		}
 
-		private void ChangePositionsInRows(int index)
-		{
-			IEnumerable<UIElement> uiButtons = interfaceSettings.buttons.
-				Where(element => Convert.ToInt32(element.Name.Remove(0, element.Name.Length - 1)) > index).
-				Select(element => element);
-			IEnumerable<UIElement> uiLabels = interfaceSettings.labels.
-				Where(element => Convert.ToInt32(element.Name.Remove(0, element.Name.Length - 1)) > index).
-				Select(element => element);
-			IEnumerable<UIElement> uiTextBoxes = interfaceSettings.textBoxes.
-				Where(element => Convert.ToInt32(element.Name.Remove(0, element.Name.Length - 1)) > index).
-				Select(element => element);
-
-			foreach (UIElement button in uiButtons)
-				Grid.SetRow(button, Grid.GetRow(button) - 1);
-			foreach (UIElement label in uiLabels)
-				Grid.SetRow(label, Grid.GetRow(label) - 1);
-			foreach (UIElement textBox in uiTextBoxes)
-				Grid.SetRow(textBox, Grid.GetRow(textBox) - 1);
-		}
-
 		private void DeleteKeyButton_Click(object sender, RoutedEventArgs e)
 		{
 			Button btn = (Button)sender;
@@ -222,7 +202,7 @@ namespace ImageViewer
 
 			if (txtBox.Text == "")
 			{
-				if (!keyManager.IsKeyBusy(e.Key.ToString()))
+				if (!keyManager.IsKeyUsed(e.Key.ToString()))
 				{
 					txtBox.Text = e.Key.ToString();
 					keyManager.AddKey(e.Key.ToString());
@@ -230,7 +210,7 @@ namespace ImageViewer
 			}
 			else
 			{
-				if (!keyManager.IsKeyBusy(e.Key.ToString()))
+				if (!keyManager.IsKeyUsed(e.Key.ToString()))
 				{
 					keyManager.RemoveKey(txtBox.Text);
 					keyManager.AddKey(e.Key.ToString());
@@ -253,7 +233,7 @@ namespace ImageViewer
 					ShowPreviousImage();
 					return;
 				}
-				if (keyManager.IsKeyBusy(e.Key.ToString()))
+				if (keyManager.IsKeyUsed(e.Key.ToString()))
 				{
 					int index = GetKeyIndex(e.Key.ToString());
 					string directoryName = GetTextBoxText(index);
@@ -274,7 +254,7 @@ namespace ImageViewer
 		private void KeyTextBox_TextChanged(object sender, RoutedEventArgs e)
 		{
 			TextBox txtBox = (TextBox)sender;
-			if(!keyManager.IsKeyBusy(txtBox.Text))
+			if(!keyManager.IsKeyUsed(txtBox.Text))
 			keyManager.AddKey(txtBox.Text);
 		}
 
@@ -289,7 +269,7 @@ namespace ImageViewer
 				if (cp.Index == index 
 					&& cp.KeyTextBox.Text == String.Empty 
 					&& txtBox.Text.Length == 1
-					&& !keyManager.IsKeyBusy(txtBox.Text))
+					&& !keyManager.IsKeyUsed(txtBox.Text))
 				{
 					cp.KeyTextBox.Text = txtBox.Text;
 				}
